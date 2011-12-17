@@ -9,6 +9,7 @@ import backtype.storm.testing.TestWordSpout;
 import backtype.storm.topology.IRichBolt;
 import backtype.storm.topology.OutputFieldsDeclarer;
 import backtype.storm.topology.TopologyBuilder;
+import backtype.storm.generated.StormTopology;
 import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Values;
@@ -45,8 +46,8 @@ public class ExclamationTopology {
 
 
     }
-    
-    public static void main(String[] args) throws Exception {
+
+    public static StormTopology makeTopology() {
         TopologyBuilder builder = new TopologyBuilder();
         
         builder.setSpout("word", new TestWordSpout(), 10);        
@@ -54,6 +55,10 @@ public class ExclamationTopology {
                 .shuffleGrouping("word");
         builder.setBolt("exclaim2", new ExclamationBolt(), 2)
                 .shuffleGrouping("exclaim1");
+        return builder.createTopology();
+    }
+    
+    public static void main(String[] args) throws Exception {
                 
         Config conf = new Config();
         conf.setDebug(true);
@@ -61,11 +66,11 @@ public class ExclamationTopology {
         if(args!=null && args.length > 0) {
             conf.setNumWorkers(3);
             
-            StormSubmitter.submitTopology(args[0], conf, builder.createTopology());
+            StormSubmitter.submitTopology(args[0], conf, makeTopology());
         } else {
         
             LocalCluster cluster = new LocalCluster();
-            cluster.submitTopology("test", conf, builder.createTopology());
+            cluster.submitTopology("test", conf, makeTopology());
             Utils.sleep(10000);
             cluster.killTopology("test");
             cluster.shutdown();    
