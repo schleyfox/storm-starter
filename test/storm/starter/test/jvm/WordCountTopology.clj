@@ -8,7 +8,7 @@
 
 (bootstrap)
 
-(defn- word-count-invariant
+(defn- word-count-p
   [input output]
   (is (=
         (frequencies
@@ -36,9 +36,9 @@
                        :storm-conf {TOPOLOGY-DEBUG true
                                     TOPOLOGY-WORKERS 2}) ]
         ; test initial case
-        (word-count-invariant [] [])
+        (word-count-p [] [])
         ; test after run
-        (word-count-invariant
+        (word-count-p
           (read-tuples results "spout")
           (read-tuples results "count"))))))
 

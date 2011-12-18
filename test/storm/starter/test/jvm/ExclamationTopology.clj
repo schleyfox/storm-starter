@@ -8,7 +8,7 @@
 
 (bootstrap)
 
-(defn- exclamation-invariant
+(defn- exclamation-p
   [input output]
   (is (ms=
         (map (fn [[word]] [(str word "!!!!!!")]) input)
@@ -26,8 +26,8 @@
                                               ["hooray"]]}
                        :storm-conf {TOPOLOGY-DEBUG true
                                     TOPOLOGY-WORKERS 2}) ]
-        (exclamation-invariant [] [])
-        (exclamation-invariant
+        (exclamation-p [] [])
+        (exclamation-p
           (read-tuples results "word")
           (read-tuples results "exclaim2"))))))
 
