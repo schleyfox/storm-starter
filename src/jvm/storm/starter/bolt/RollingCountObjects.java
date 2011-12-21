@@ -1,5 +1,6 @@
 package storm.starter.bolt;
 
+import org.apache.log4j.Logger;
 import backtype.storm.task.OutputCollector;
 import backtype.storm.task.TopologyContext;
 import backtype.storm.topology.IRichBolt;
@@ -8,12 +9,14 @@ import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Values;
 import backtype.storm.utils.Utils;
+import backtype.storm.utils.Time;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 public class RollingCountObjects implements IRichBolt {
+    public static Logger LOG = Logger.getLogger(RollingCountObjects.class);
 
     private HashMap<Object, long[]> _objectCounts = new HashMap<Object, long[]>();
     private int _numBuckets;
@@ -40,7 +43,7 @@ public class RollingCountObjects implements IRichBolt {
     }
 
     public int currentSecond() {
-        return (int) (System.currentTimeMillis() / 1000);
+        return (int) (Time.currentTimeMillis() / 1000);
     }
 
     public int secondsPerBucket(int buckets) {
@@ -63,6 +66,7 @@ public class RollingCountObjects implements IRichBolt {
                   if(currBucket!=lastBucket) {
                       int bucketToWipe = (currBucket + 1) % _numBuckets;
                       synchronized(_objectCounts) {
+                          LOG.info("CLEANING: " + bucketToWipe);
                           Set objs = new HashSet(_objectCounts.keySet());
                           for (Object obj: objs) {
                             long[] counts = _objectCounts.get(obj);
@@ -79,7 +83,7 @@ public class RollingCountObjects implements IRichBolt {
                       }
                       lastBucket = currBucket;
                   }
-                  long delta = millisPerBucket(_numBuckets) - (System.currentTimeMillis() % millisPerBucket(_numBuckets));
+                  long delta = millisPerBucket(_numBuckets) - (Time.currentTimeMillis() % millisPerBucket(_numBuckets));
                   Utils.sleep(delta);
                 }
             }
@@ -92,6 +96,7 @@ public class RollingCountObjects implements IRichBolt {
         Object obj = tuple.getValue(0);
         int bucket = currentBucket(_numBuckets);
         synchronized(_objectCounts) {
+            LOG.info("ADDING TO: " + bucket);
             long[] curr = _objectCounts.get(obj);
             if(curr==null) {
                 curr = new long[_numBuckets];

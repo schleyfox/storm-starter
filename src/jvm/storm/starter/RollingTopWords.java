@@ -4,6 +4,7 @@ import backtype.storm.Config;
 import backtype.storm.LocalCluster;
 import backtype.storm.testing.TestWordSpout;
 import backtype.storm.topology.TopologyBuilder;
+import backtype.storm.generated.StormTopology;
 import backtype.storm.tuple.Fields;
 import storm.starter.bolt.MergeObjects;
 import storm.starter.bolt.RankObjects;
@@ -17,9 +18,8 @@ import storm.starter.bolt.RollingCountObjects;
  * on Twitter.
  */
 public class RollingTopWords {
-    
-    public static void main(String[] args) throws Exception {
-        
+   
+    public static StormTopology makeTopology() {
         final int TOP_N = 3;
         
         TopologyBuilder builder = new TopologyBuilder();
@@ -32,14 +32,15 @@ public class RollingTopWords {
                  .fieldsGrouping("count", new Fields("obj"));
         builder.setBolt("merge", new MergeObjects(TOP_N))
                  .globalGrouping("rank");
-        
-        
-        
+        return builder.createTopology();
+    }
+
+    public static void main(String[] args) throws Exception {
         Config conf = new Config();
         conf.setDebug(true);
         
         LocalCluster cluster = new LocalCluster();
-        cluster.submitTopology("rolling-demo", conf, builder.createTopology());
+        cluster.submitTopology("rolling-demo", conf, makeTopology());
         Thread.sleep(10000);
         
         cluster.shutdown();

@@ -7,6 +7,7 @@ import backtype.storm.topology.OutputFieldsDeclarer;
 import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Values;
+import backtype.storm.utils.Time;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -66,7 +67,7 @@ public class RankObjects implements IBasicBolt {
         if (_rankings.size() > _count) {
             _rankings.remove(_count);
         }
-        long currentTime = System.currentTimeMillis();
+        long currentTime = Time.currentTimeMillis();
         if(_lastTime==null || currentTime >= _lastTime + 2000) {
             collector.emit(new Values(_rankings));
             _lastTime = currentTime;

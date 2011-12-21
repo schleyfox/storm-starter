@@ -8,6 +8,7 @@ import backtype.storm.topology.OutputFieldsDeclarer;
 import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Values;
+import backtype.storm.utils.Time;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -74,7 +75,7 @@ public class MergeObjects implements IBasicBolt {
             }
         }
 
-        long currentTime = System.currentTimeMillis();
+        long currentTime = Time.currentTimeMillis();
         if(_lastTime==null || currentTime >= _lastTime + 2000) {
             collector.emit(new Values(_rankings));
             LOG.info("Rankings: " + _rankings);
