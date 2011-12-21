@@ -1,7 +1,7 @@
 (ns storm.starter.test.jvm.WordCountTopology
   (:use [clojure.test])
   (:import [storm.starter WordCountTopology])
-  (:use [storm.starter.clj.util])
+  (:use [storm.test.util])
   (:use [backtype.storm bootstrap testing])
   (:use [backtype.storm.daemon common])
   )

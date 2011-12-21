@@ -16,5 +16,6 @@
                  ]
 
   :dev-dependencies [[storm "0.6.0"]
+                     [storm-test "0.1.0"]
                      ])
 

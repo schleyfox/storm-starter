@@ -1,7 +1,7 @@
 (ns storm.starter.test.clj.word-count
   (:use [clojure.test])
   (:use [storm.starter.clj.word-count])
-  (:use [storm.starter.clj.util])
+  (:use [storm.test.util])
   (:use [backtype.storm bootstrap testing])
   (:use [backtype.storm.daemon common])
   )

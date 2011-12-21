@@ -1,7 +1,7 @@
 (ns storm.starter.test.jvm.ExclamationTopology
   (:use [clojure.test])
   (:import [storm.starter ExclamationTopology])
-  (:use [storm.starter.clj.util])
+  (:use [storm.test.util])
   (:use [backtype.storm bootstrap testing])
   (:use [backtype.storm.daemon common])
   )
